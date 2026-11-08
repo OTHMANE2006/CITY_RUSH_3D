@@ -1,0 +1,12 @@
+# Godot generated
+.godot/
+
+# Android
+android/
+build/
+
+# OS files
+.DS_Store
+
+# Logs
+*.log
