@@ -27,6 +27,8 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          cmdline-tools-version: 12266719
 
       - name: Setup Godot 4.7
         uses: solarlabyrinth/action-setup-godot@v3
@@ -39,10 +41,8 @@ jobs:
           yes | sdkmanager --licenses
           sdkmanager --sdk_root="$ANDROID_HOME" \
             "platform-tools" \
-            "cmdline-tools;latest" \
             "platforms;android-35" \
             "build-tools;35.0.1" \
-            "cmake;3.10.2.4988404" \
             "ndk;28.1.13356709"
 
       - name: Verify Environment
