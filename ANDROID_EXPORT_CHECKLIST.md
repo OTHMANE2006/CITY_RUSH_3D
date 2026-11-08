@@ -69,3 +69,13 @@ Enable **Install from unknown apps** on the device.
 - [ ] Launch → main menu renders
 - [ ] Play 1 full run → game over → restart
 - [ ] Verify FPS on low-end device (30 FPS fallback)
+
+## ✅ Fixed in this session (runtime validation via headless Godot 4.7.2)
+
+- [x] Obstacle visuals (barrier / cone / vehicle / box / low / high) now build correctly (`MeshInstance3D`).
+- [x] Coin pooling add/remove lifecycle errors fixed.
+- [x] Obstacle spawn transform errors fixed.
+- [x] Player restart state reset fixed.
+- [x] HUD distance counter + power-up end handling fixed.
+- [x] Mobile touch controls wired into gameplay.
+- [x] Headless validation runs pass with exit code 0 and no script/runtime errors.

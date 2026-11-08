@@ -68,10 +68,27 @@ godot --headless --path /root/projects/city_rush_3d --quit-after 240
 - Renderer: `gl_compatibility` (mobile) — low-end friendly.
 - Target FPS: 60 (`Engine.max_fps = 60.0`), automatic 30 FPS fallback for devices with < ~1.75 GB RAM (`OS.get_memory_info`).
 - Textures: ETC2/ASTC compression enabled for Android export preset.
-- Shadows: directional light shadows enabled (map 1024, cascade 2).
+- Shadows: single directional light (sun) with shadows (map 1024, cascade 2) — unified from 12 lamp lights.
 - Fog + Filmic tonemap for cinematic depth.
 - Object pooling: obstacle pool (12) and coin pool (12) — no per-spawn `queue_free`.
 - Procedural low-poly world (no heavy meshes/textures).
+
+## Fixes applied in this session
+
+- `CoinSpawner._spawn_coin()`: pooled coins already have a parent, `add_child()` is now only called for freshly created coins (was causing "Can't add child ... already has a parent" runtime errors).
+- `CoinSpawner`: pool return logic on `stop()`; coin update loop now index-based (safe removal while iterating).
+- `CoinSpawner._check_collection()`: coin magnet now auto-collects coins within an 8m radius (magnet power-up).
+- `ObstacleSpawner._build_visuals()`: obstacle meshes now use `MeshInstance3D` instead of `Node3D` (barrier, cone, vehicle, wooden box, low/high obstacles) — was causing `Invalid assignment of property or key 'mesh'` runtime errors and invisible obstacles.
+- `ObstacleSpawner._create_obstacle()`: set local position before `add_child()` (fixes `!is_inside_tree()` global transform errors on fresh obstacles).
+- `ObstacleSpawner._rebuild_visuals()`: removed invalid `vehicle.add_child(vehicle)` self-reference.
+- `ObstacleSpawner.stop()`: return active obstacles to the pool instead of dropping them.
+- `PlayerController.reset_position()`: now fully resets jump/slide state, velocity and visuals (restart after crash/game over).
+- `PlayerController`: slide now scales the capsule visual down (slide height).
+- `WorldBuilder.move_scenery()`: scenery now moves at world speed (`GameManager.BASE_SPEED`) instead of a fixed slow speed.
+- `WorldBuilder`: environment background mode corrected to solid color background.
+- `GameManager`: missions progress now read/written from `SaveSystem` (single source of truth) so missions progress/rewards actually register.
+- `GameManager`: added `distance_changed` signal (HUD distance counter) and `powerup_ended` signal.
+- `HudUI`: distance counter label is now updated during play; power-up indicators hide when the power-up ends; added on-screen mobile touch controls (left/right lane + jump + slide buttons) shown during gameplay.
 
 ## How to export Android APK
 

@@ -183,6 +183,8 @@ func _on_state_changed(new_state: int) -> void:
         jump_btn.visible = show_controls
     if slide_btn != null:
         slide_btn.visible = show_controls
+    if pause_btn != null:
+        pause_btn.visible = new_state == GameManager.STATE_RUNNING or new_state == GameManager.STATE_PAUSED
 
 func _on_pause_pressed() -> void:
     if GameManager.state == GameManager.STATE_RUNNING:
