@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout project
@@ -25,24 +25,33 @@ jobs:
           java-version: '17'
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v4
+        uses: android-actions/setup-android@v3
 
-      - name: Setup Godot
+      - name: Setup Godot 4.7
         uses: solarlabyrinth/action-setup-godot@v3
         with:
           version: 4.7-stable
           export-templates: true
 
-      - name: Install Android packages
+      - name: Install Android SDK packages
         run: |
+          yes | sdkmanager --licenses
           sdkmanager --install \
             "platform-tools" \
-            "build-tools;35.0.1" \
             "platforms;android-35" \
-            "cmake;3.10.2.4988404" \
+            "build-tools;35.0.1" \
             "ndk;28.1.13356709"
 
-      - name: Configure Godot Android paths
+      - name: Verify Android SDK
+        run: |
+          echo "JAVA_HOME=$JAVA_HOME"
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          java -version
+          godot --version
+          sdkmanager --list_installed
+          ls -la "$ANDROID_HOME/ndk"
+
+      - name: Configure Godot
         run: |
           mkdir -p ~/.config/godot
           cat > ~/.config/godot/editor_settings-4.tres <<EOF
@@ -53,7 +62,8 @@ jobs:
           EOF
 
       - name: Import project
-        run: godot --headless --editor --path . --quit
+        run: |
+          godot --headless --editor --path . --quit
 
       - name: Export Android APK
         run: |
@@ -61,6 +71,11 @@ jobs:
           godot --headless --path . \
             --export-debug "CityRush3D" \
             build/city_rush_3d.apk
+
+      - name: Verify APK
+        run: |
+          test -f build/city_rush_3d.apk
+          ls -lh build/city_rush_3d.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
